@@ -130,7 +130,7 @@ def finetune(sess,
         accumulate_gradients = 1
 
     context = tf.placeholder(tf.int32, [batch_size, None])
-    output = model.model(hparams=hparams, X=context)
+    output = model.model(hparams=hparams, X=context, reuse=True)
     loss = tf.reduce_mean(
         tf.nn.sparse_softmax_cross_entropy_with_logits(
             labels=context[:, 1:], logits=output['logits'][:, :-1]))
@@ -303,7 +303,7 @@ def load_gpt2(sess,
         hparams.override_from_dict(json.load(f))
 
     context = tf.placeholder(tf.int32, [1, None])
-    output = model.model(hparams=hparams, X=context)
+    output = model.model(hparams=hparams, X=context, reuse=True)
 
     ckpt = tf.train.latest_checkpoint(checkpoint_path)
     saver = tf.train.Saver(allow_empty=True)
@@ -565,7 +565,7 @@ def cmd():
     )
 
     # Explicit arguments
-    
+
     parser.add_argument(
         '--mode', help='Mode for using the CLI (either "finetune" or "generate") [Required]', nargs='?')
     parser.add_argument(
